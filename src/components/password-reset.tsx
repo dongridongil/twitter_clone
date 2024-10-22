@@ -46,17 +46,20 @@ const Form = styled.form`
     justify-content: center;
     align-items: center;
     color: black;
-    gap: 10px;
+
     width: 500px;
-    height: 150px;
+    height: 160px;
     top: 150px;
 
     span {
         cursor: pointer;
-        position: absolute;
-        padding: 18px;
-        top: 0;
-        right: 0;
+        display: flex;
+        margin-left: auto;
+        padding: 12px;
+    }
+    input {
+        margin-top: auto;
+        margin-bottom: 15px;
     }
 `;
 const Back = styled.div`
@@ -104,9 +107,15 @@ export default function PasswordReset() {
                 <Back>
                     <Form onSubmit={onSubmit}>
                         <span onClick={() => setOpenModal(false)}>❌</span>
-                        <h2>이메일 제출 시 비밀번호 초기화메일 발송</h2>
-                        <Input name="email" onChange={onChange} type="email" value={email} placeholder="이메일 입력" />
-                        <Input name="submit" type="submit" placeholder="이메일 입력" value={'확인'} />
+
+                        <Input
+                            name="email"
+                            onChange={onChange}
+                            type="email"
+                            value={email}
+                            placeholder="이메일 입력시 비밀번호 초기화 메일 발송"
+                        />
+                        <Input name="submit" type="submit" value={'확인'} />
                     </Form>
                 </Back>
             )}

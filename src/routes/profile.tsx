@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { auth, db, storage } from '../firebase';
 import React, { useEffect, useState } from 'react';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { collection, getDocs, limit, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, limit, onSnapshot, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { Unsubscribe, updateProfile } from 'firebase/auth';
 import { ITweet } from '../components/timeline';
 import Tweet from '../components/tweet';
@@ -175,6 +175,7 @@ export default function Profile() {
             unsubscribe && unsubscribe();
         };
     }, []);
+
     const nameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         setProfileName(value);
@@ -183,9 +184,20 @@ export default function Profile() {
         e.preventDefault();
         try {
             if (!user) return;
+
             await updateProfile(user, {
                 displayName: profileName,
             });
+            const tweetsQuery = query(collection(db, 'tweets'), where('userId', '==', user?.uid));
+            /** 쿼리에 해당하는 문서 가져오기 */
+            const snapshot = await getDocs(tweetsQuery);
+            /** tweets 컬렉션을 map 을 이용해 하나씩 data들을 뽑아내서 tweets 에 저장 */
+            snapshot.docs.map((doc) => {
+                updateDoc(doc.ref, {
+                    username: profileName,
+                });
+            });
+
             setOpenmodal(false);
         } catch (e) {
             console.log(e);
